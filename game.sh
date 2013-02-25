@@ -1,12 +1,15 @@
 #!/bin/bash
 
+# Bashgame for bash learning
+
+
 random() {
 	NUMBER=$[ ( $RANDOM % $1 )  + 1 ]
 	echo $NUMBER
 }
 
 monster() {
-	choice=`random 3`
+	choice=`random 5`
 	if [[ $choice -eq 1 ]]; then
 		monname="House cat"
 		monhealth=4
@@ -21,6 +24,16 @@ monster() {
 		monname="Giraffe"
 		monhealth=70
 		monattack=4
+	fi
+	if [[ $choice -eq 3 ]]; then
+		monname="Horse"
+		monhealth=14
+		monattack=8
+	fi
+	if [[ $choice -eq 3 ]]; then
+		monname="Rabbit"
+		monhealth=2
+		monattack=3
 	fi
 }
 
@@ -44,21 +57,18 @@ while [[ $health -gt 0 ]]; do
 	status
 
 	# Fight or run phase
-	echo "You are faced with a: $monname"	
+	echo "You are faced with a $monname"	
 	echo -n "Do you wish to run or fight?: "
 	read rof
 	rof=$(echo "$rof" | tr '[:upper:]' '[:lower:]')
-	if	[[ "$rof" = "run" ]]; then
-		echo "You sprint away and escape from $monname!" 
-	fi
 #	if	[[ "$rof" = "rest" ]]; then
 #		echo "You rest and regain 20 health!"	 
 #		health=$(expr $health + 20)
 #	fi
 	if	[[ "$rof" = "fight" ]]; then
-		echo "You draw your weapon and face off against $monname!" 
+		echo "You draw your weapon and face off against a $monname!" 
 	else
-		echo "You sprint away and escape from $monname!" 
+		echo "You sprint away and escape from a $monname!" 
 		monhealth=0
 	fi
 	
@@ -71,7 +81,7 @@ while [[ $health -gt 0 ]]; do
 		sleep 1
 		health=$(expr $health - $monattack)
 		if [[ $monhealth -lt 1 ]]; then
-			echo "You have defeated $monname! You have become more powerful!"
+			echo "You have defeated a $monname! You have become more powerful!"
 			kills=$(expr $kills + 1)
 			attack=$(expr $attack + 1)
 		fi
@@ -87,7 +97,7 @@ while [[ $health -gt 0 ]]; do
 				kills="0"
 				monhealth=0
 			else
-				echo "GAME OVER"
+				echo "GAME OVER!"
 				exit
 			fi
 		fi
