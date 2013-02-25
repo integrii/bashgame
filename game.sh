@@ -42,6 +42,8 @@ read name
 while [[ $health -gt 0 ]]; do
 	monster
 	status
+
+	# Fight or run phase
 	echo "You are faced with a: $monname"	
 	echo -n "Do you wish to run or fight?: "
 	read rof
@@ -53,12 +55,14 @@ while [[ $health -gt 0 ]]; do
 #		echo "You rest and regain 20 health!"	 
 #		health=$(expr $health + 20)
 #	fi
-
 	if	[[ "$rof" = "fight" ]]; then
 		echo "You draw your weapon and face off against $monname!" 
 	else
 		echo "You sprint away and escape from $monname!" 
+		monhealth=0
 	fi
+	
+	# Combat phase
 	while [[ $health -gt 0 && $monhealth -gt 0 ]]; do
 		echo "You attack for $attack damage."
 		sleep 1
