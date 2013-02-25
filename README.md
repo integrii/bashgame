@@ -4,7 +4,7 @@ A super simple proof of concept game written in bash.  Mostly for learning purpo
 
 
 ##TODO
-Health potions
-Experience? Reason to attack bigger mobs
-High score list
-Way to host on the internet reliably (Windows netcat?)
+* Health potions
+* experience? Reason to attack bigger mobs
+* high score list
+* Way to host on the internet reliably (Windows netcat?)
