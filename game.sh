@@ -43,7 +43,7 @@ while [[ $health -gt 0 ]]; do
 	monster
 	status
 	echo "You are faced with a: $monname"	
-	echo -n "Do you wish to run or fight or rest?: "
+	echo -n "Do you wish to run or fight?: "
 	read rof
 	rof=$(echo "$rof" | tr '[:upper:]' '[:lower:]')
 	if	[[ "$rof" = "run" ]]; then
