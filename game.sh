@@ -43,12 +43,16 @@ while [[ $health -gt 0 ]]; do
 	monster
 	status
 	echo "You are faced with a: $monname"	
-	echo -n "Do you wish to run or fight?: "
+	echo -n "Do you wish to run or fight or rest?: "
 	read rof
 	rof=$(echo "$rof" | tr '[:upper:]' '[:lower:]')
 	if	[[ "$rof" = "run" ]]; then
 		echo "You sprint away and escape from $monname!" 
 	fi
+#	if	[[ "$rof" = "rest" ]]; then
+#		echo "You rest and regain 20 health!"	 
+#		health=$(expr $health + 20)
+#	fi
 
 	if	[[ "$rof" = "fight" ]]; then
 		echo "You draw your weapon and face off against $monname!" 
@@ -63,11 +67,25 @@ while [[ $health -gt 0 ]]; do
 		sleep 1
 		health=$(expr $health - $monattack)
 		if [[ $monhealth -lt 1 ]]; then
-			echo "You have defeated $monname!"
+			echo "You have defeated $monname! You have become more powerful!"
 			kills=$(expr $kills + 1)
+			attack=$(expr $attack + 1)
 		fi
 		if [[ $health -lt 1 ]]; then
 			echo "You're dead. :("
+			status
+			echo -n "Would you like to play again?: "
+			read again
+			again=$(echo "$again" | tr '[:upper:]' '[:lower:]')
+			if [[ $again = "yes" ]]; then
+				health=100
+				attack=10
+				kills="0"
+				monhealth=0
+			else
+				echo "GAME OVER"
+				exit
+			fi
 		fi
 	done
 done
