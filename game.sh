@@ -81,14 +81,19 @@ while [[ $health -gt 0 ]]; do
 			kills=$(expr $kills + 1)
 			attack=$(expr $attack + 1)
 			# Heal Potion 
-			pot=`random 6`
+			pot=`random 1`
 			if [[ $pot -eq 1 ]]; then
-				echo "A health potion worth 20 HP drops, would you like to drink it?:"
-				read drink
-				drink=$(echo "$drink" | tr '[:upper:]' '[:lower:]')
-				if [[ "$drink" = "yes" ]]; then
-					health=$(expr $health + 20)
-				fi	
+				echo "You found a health potion.  Do you want to drink it?"
+				select drink in "Yes" "No"; do
+					case $drink in
+						Yes ) 
+							health=$(expr $health + 20);
+						break;;
+						No ) 
+							echo "You decide not to drink a health potion."
+						break;;
+					esac
+				done
 			fi
 		fi
 		# Death
