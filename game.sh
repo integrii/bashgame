@@ -2,12 +2,12 @@
 
 # Bashgame for bash learning
 
-
+#RNG
 random() {
 	NUMBER=$[ ( $RANDOM % $1 )  + 1 ]
 	echo $NUMBER
 }
-
+# Monster list
 monster() {
 	choice=`random 5`
 	if [[ $choice -eq 1 ]]; then
@@ -43,7 +43,7 @@ status() {
 	echo "Attack: $attack"
 	echo "Kills: $kills"
 }
-
+# Set starting stats
 health=100
 attack=10
 kills="0"
@@ -61,10 +61,6 @@ while [[ $health -gt 0 ]]; do
 	echo -n "Do you wish to run or fight?: "
 	read rof
 	rof=$(echo "$rof" | tr '[:upper:]' '[:lower:]')
-#	if	[[ "$rof" = "rest" ]]; then
-#		echo "You rest and regain 20 health!"	 
-#		health=$(expr $health + 20)
-#	fi
 	if	[[ "$rof" = "fight" ]]; then
 		echo "You draw your weapon and face off against a $monname!" 
 	else
@@ -84,7 +80,18 @@ while [[ $health -gt 0 ]]; do
 			echo "You have defeated a $monname! You have become more powerful!"
 			kills=$(expr $kills + 1)
 			attack=$(expr $attack + 1)
+			# Heal Potion 
+			pot=`random 6`
+			if [[ $pot -eq 1 ]]; then
+				echo "A health potion worth 20 HP drops, would you like to drink it?:"
+				read drink
+				drink=$(echo "$drink" | tr '[:upper:]' '[:lower:]')
+				if [[ "$drink" = "yes" ]]; then
+					health=$(expr $health + 20)
+				fi	
+			fi
 		fi
+		# Death
 		if [[ $health -lt 1 ]]; then
 			echo "You're dead. :("
 			status
