@@ -87,10 +87,11 @@ while [[ $health -gt 0 ]]; do
 			# Heal Potion 
 			pot=`random 1`
 			if [[ $pot -eq 1 ]]; then
-				echo "You found a health potion!"
-				select drink in "Yes" "No"; do
+				echo "You found a health potion! Press 1 to drink or 2 to save."
+				healpotion=$(expr $healpotion + 1)
+				select drink in "Drink" "Save"; do
 					case $drink in
-						Yes ) 
+						Drink ) 
 							if [[ $healpotion -gt 0 ]]; then
 								health=$(expr $health + 20);
 								healpotion=$(expr $healpotion - 1);
@@ -98,7 +99,7 @@ while [[ $health -gt 0 ]]; do
 								echo "You dont have any health potions!"
 							fi
 						break;;
-						No ) 
+						Save ) 
 							echo "You decide not to drink a health potion."
 						break;;
 					esac
