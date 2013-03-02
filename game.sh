@@ -42,7 +42,11 @@ status() {
 	echo "Health: $health"
 	echo "Attack: $attack"
 	echo "Kills: $kills"
+	if [[ $healpotion -gt 0 ]]; then
+		echo "Heal Potions: $healpotion"
+	fi
 }
+
 # Set starting stats
 health=100
 attack=10
@@ -83,11 +87,16 @@ while [[ $health -gt 0 ]]; do
 			# Heal Potion 
 			pot=`random 1`
 			if [[ $pot -eq 1 ]]; then
-				echo "You found a health potion.  Do you want to drink it?"
+				echo "You found a health potion!"
 				select drink in "Yes" "No"; do
 					case $drink in
 						Yes ) 
-							health=$(expr $health + 20);
+							if [[ $healpotion -gt 0 ]]; then
+								health=$(expr $health + 20);
+								healpotion=$(expr $healpotion - 1);
+							else
+								echo "You dont have any health potions!"
+							fi
 						break;;
 						No ) 
 							echo "You decide not to drink a health potion."
@@ -110,7 +119,7 @@ while [[ $health -gt 0 ]]; do
 				monhealth=0
 			else
 				echo "$kills - $name" >> .highscores
-				cat .highscores | sort -r | tail -n 10 > .highscores.new
+				cat .highscores | sort -n -r | tail -n 10 > .highscores.new
 				mv .highscores.new .highscores; rm -f .highscores.new
 				echo " -- HIGH SCORES -- "
 				cat .highscores
