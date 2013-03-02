@@ -97,6 +97,11 @@ while [[ $health -gt 0 ]]; do
 				kills="0"
 				monhealth=0
 			else
+				echo "$kills - $name" >> .highscores
+				cat .highscores | sort -r | tail -n 10 > .highscores.new
+				mv .highscores.new .highscores; rm -f .highscores.new
+				echo " -- HIGH SCORES -- "
+				cat .highscores
 				echo "GAME OVER!"
 				exit
 			fi
