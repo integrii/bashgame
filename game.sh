@@ -9,7 +9,7 @@ random() {
 }
 # Monster list
 monster() {
-	choice=`random 5`
+	choice=`random 6`
 	if [[ $choice -eq 1 ]]; then
 		monname="House cat"
 		monhealth=4
@@ -34,6 +34,11 @@ monster() {
 		monname="Rabbit"
 		monhealth=2
 		monattack=3
+	fi
+	if [[ $choice -eq 6 ]]; then
+		monname="Bear"
+		monhealth=50
+		monattack=20
 	fi
 }
 
