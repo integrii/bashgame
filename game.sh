@@ -57,7 +57,7 @@ health=100
 attack=10
 kills="0"
 
-echo "Welcome to Basher Inc"
+echo "Welcome to testing Inc"
 echo -n "What is your name?: "
 read name
 
