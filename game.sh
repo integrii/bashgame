@@ -58,7 +58,7 @@ attack=10
 kills="0"
 
 echo "Welcome to testing Inc"
-echo -n "What is your name?: "
+echo "What is your name?: "
 read name
 
 while [[ $health -gt 0 ]]; do
@@ -67,7 +67,7 @@ while [[ $health -gt 0 ]]; do
 
 	# Fight or run phase
 	echo "You are faced with a $monname"	
-	echo -n "Do you wish to run or fight?: "
+	echo "Do you wish to run or fight?: "
 	read rof
 	rof=$(echo "$rof" | tr '[:upper:]' '[:lower:]')
 	if	[[ "$rof" = "fight" ]]; then
@@ -115,7 +115,7 @@ while [[ $health -gt 0 ]]; do
 		if [[ $health -lt 1 ]]; then
 			echo "You're dead. :("
 			status
-			echo -n "Would you like to play again?: "
+			echo "Would you like to play again?: "
 			read again
 			again=$(echo "$again" | tr '[:upper:]' '[:lower:]')
 			if [[ $again = "yes" ]]; then
