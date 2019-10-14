@@ -1,13 +1,14 @@
 #!/bin/bash
 
-# Bashgame for bash learning
+# Simple RPG game for learning bash coding
 
-#RNG
+# Generate a random number between 1 and the passed value, inclusive
 random() {
 	NUMBER=$[ ( $RANDOM % $1 )  + 1 ]
 	echo $NUMBER
 }
-# Monster list
+
+# Monster list. Calling this function chooses a monster at random and sets the corresponding variables
 monster() {
 	choice=`random 6`
 	if [[ $choice -eq 1 ]]; then
@@ -42,6 +43,7 @@ monster() {
 	fi
 }
 
+# Displays the current status of the game
 status() {
 	echo "Your name: $name"
 	echo "Health: $health"
@@ -57,7 +59,7 @@ health=100
 attack=10
 kills="0"
 
-echo "Welcome to testing Inc"
+echo "Welcome to BASH RPG"
 echo "What is your name?: "
 read name
 
@@ -81,25 +83,26 @@ while [[ $health -gt 0 ]]; do
 	while [[ $health -gt 0 && $monhealth -gt 0 ]]; do
 		echo "You attack for $attack damage."
 		sleep 1
-		monhealth=$(expr $monhealth - $attack)
+		((monhealth -= $attack))
 		echo "$monname hits you for $monattack damage."
 		sleep 1
-		health=$(expr $health - $monattack)
+		((health -= $monattack))
 		if [[ $monhealth -lt 1 ]]; then
 			echo "You have defeated a $monname! You have become more powerful!"
-			kills=$(expr $kills + 1)
-			attack=$(expr $attack + 1)
+			((kills += 1))
+			((attack += 1))
+
 			# Heal Potion 
 			pot=`random 1`
 			if [[ $pot -eq 1 ]]; then
 				echo "You found a health potion! Press 1 to drink or 2 to save."
-				healpotion=$(expr $healpotion + 1)
+				((healpotion += 1))
 				select drink in "Drink" "Save"; do
 					case $drink in
 						Drink ) 
 							if [[ $healpotion -gt 0 ]]; then
-								health=$(expr $health + 20);
-								healpotion=$(expr $healpotion - 1);
+								((health += 20))
+								((healpotion -= 1))
 							else
 								echo "You dont have any health potions!"
 							fi
@@ -111,6 +114,7 @@ while [[ $health -gt 0 ]]; do
 				done
 			fi
 		fi
+
 		# Death
 		if [[ $health -lt 1 ]]; then
 			echo "You're dead. :("
