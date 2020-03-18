@@ -38,6 +38,7 @@ initgrid() {
 # Updates the cells in the grid for the next generation.
 updategrid() {
    unset GRID
+   ALIVECOUNT=0
    for ((x=0;x<$WIDTH;x++)); do
       for ((y=0;y<$HEIGHT;y++)); do
          key=$(( $x + $y + ( $x * ( $HEIGHT - 1 ) ) )) 
@@ -57,9 +58,13 @@ updategrid() {
                nextgen=1
             fi
          fi
+         if [ $nextgen -eq 1 ]; then
+            ((ALIVECOUNT++))
+         fi
          GRID+=($nextgen)
       done
    done
+   ((GENERATION++))
 }
 
 # Checks how many live neighbors are around
@@ -237,19 +242,46 @@ drawcells() {
    tput sgr0 # Reset text attributes.
    tput cup 0 0
 }
+
+# Draws the generation information.
+drawinfo() {
+   tput cup $(($LASTROW + $BUFFER + 4)) $FIRSTCOL
+   printf "%b" "Generation: $GENERATION"
+   tput cup $(($LASTROW + $BUFFER + 5)) $FIRSTCOL
+   printf "%b" "Alive: $ALIVECOUNT"
+}
+
+# Draws the start information.
+drawstartinfo() {
+   if [ $START -eq 0 ]; then
+      tput setaf 2
+      tput bold
+      tput smul
+      tput cup $(($BUFFER - 1)) 0 
+      printf "%b" "Press Return to begin."
+   else
+      tput cup $(($BUFFER - 1)) 0
+      printf "%b" "Simulating . . .      "
+   fi
+
+   tput sgr0 # Reset text attributes.
+   tput cup 0 0
+}
                         
 WALL=" "
 CELL=" "                                     
-  
-BUFFER=11   
 
+BUFFER=15   
+ALIVECOUNT=0
+GENERATION=1
+START=0
 FIRSTROW=3 
 LASTROW=15
 HEIGHT=$(($LASTROW - $FIRSTROW))                     
 FIRSTCOL=3
 LASTCOL=15 
 WIDTH=$(($LASTCOL - $FIRSTCOL))
-SPAWNCHANCE=0.15
+SPAWNCHANCE=0.25
 
 declare -a LASTGRID
 declare -a GRID
@@ -267,20 +299,32 @@ echo -n "This is a simulation of the Conway's Game of Life:
 "
 echo "Creating border of size $(($HEIGHT)) x $(($WIDTH))"
 initgrid
-echo "Beginning simulation . . ."
+echo "Setting up simulation . . ."
 drawborder
+drawinfo
 drawcells
-
-sleep 2
+drawstartinfo
+sleep 0.1
+read
+START=1
+drawstartinfo
 
 while :; do
-   sleep 0.15
-
    copy=${!GRID[*]}
    for i in $copy; do
       LASTGRID[$i]=${GRID[$i]}
    done
 
    updategrid
+   drawinfo
+
+   sleep 0.15
+
+   if [ $ALIVECOUNT -eq 0 ]; then
+      tput cup $(($LASTROW + $BUFFER + 7)) 0
+      printf "%b" "All cells have died! Simulation over.\n"
+      exit
+   fi
+
    drawcells
 done
