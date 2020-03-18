@@ -267,25 +267,19 @@ drawstartinfo() {
    tput sgr0 # Reset text attributes.
    tput cup 0 0
 }
-                        
+
 WALL=" "
 CELL=" "                                     
 
-BUFFER=15   
+BUFFER=17   
 ALIVECOUNT=0
 GENERATION=1
 START=0
-FIRSTROW=3 
-LASTROW=15
-HEIGHT=$(($LASTROW - $FIRSTROW))                     
-FIRSTCOL=3
-LASTCOL=15 
-WIDTH=$(($LASTCOL - $FIRSTCOL))
-SPAWNCHANCE=0.25
+SPAWNCHANCE=0.15
 
 declare -a LASTGRID
 declare -a GRID
-
+                     
 clear
 echo -n "This is a simulation of the Conway's Game of Life:
 
@@ -297,6 +291,16 @@ echo -n "This is a simulation of the Conway's Game of Life:
    Press [CTRL+C] to stop.
 
 "
+echo -n "Enter the height of the board you would like to simulate: "
+read HEIGHT
+echo -n "Enter the width of the board you would like to simulate: "
+read WIDTH
+
+FIRSTROW=3
+LASTROW=$(($FIRSTROW + $HEIGHT))                  
+FIRSTCOL=3
+LASTCOL=$(($FIRSTCOL + $WIDTH))
+
 echo "Creating border of size $(($HEIGHT)) x $(($WIDTH))"
 initgrid
 echo "Setting up simulation . . ."
@@ -317,6 +321,7 @@ while :; do
 
    updategrid
    drawinfo
+   drawcells
 
    sleep 0.15
 
@@ -325,6 +330,4 @@ while :; do
       printf "%b" "All cells have died! Simulation over.\n"
       exit
    fi
-
-   drawcells
 done
