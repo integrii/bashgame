@@ -10,44 +10,60 @@ random() {
 
 # Monster list. Calling this function chooses a monster at random and sets the corresponding variables
 monster() {
-	choice=`random 6`
+	choice=`random $((level * 3))`
 	if [[ $choice -eq 1 ]]; then
 		monname="House cat"
 		monhealth=4
-		monattack=6
+		monattack=10
 	fi
 	if [[ $choice -eq 2 ]]; then
-		monname="Tiger"
+		monname="Rabbit"
 		monhealth=17
-		monattack=19
+		monattack=15
 	fi
 	if [[ $choice -eq 3 ]]; then
 		monname="Giraffe"
 		monhealth=70
-		monattack=4
+		monattack=6
 	fi
 	if [[ $choice -eq 4 ]]; then
-		monname="Horse"
-		monhealth=14
+		monname="Rhino"
+		monhealth=30
 		monattack=8
 	fi
 	if [[ $choice -eq 5 ]]; then
-		monname="Rabbit"
-		monhealth=2
-		monattack=3
+		monname="Tiger"
+		monhealth=65
+		monattack=10
 	fi
 	if [[ $choice -eq 6 ]]; then
 		monname="Bear"
-		monhealth=50
+		monhealth=80
 		monattack=20
+	fi
+	if [[ $choice -eq 7 ]]; then
+		monname="Dragon"
+		monhealth=120
+		monattack=30
+	fi
+	if [[ $choice -eq 8 ]]; then
+		monname="Troll"
+		monhealth=90
+		monattack=10
+	fi
+	if [[ $choice -eq 9 ]]; then
+		monname="Wizard"
+		monhealth=50
+		monattack=80
 	fi
 }
 
 # Displays the current status of the game
 status() {
-	echo "Your name: $name"
-	echo "Health: $health"
-	echo "Attack: $attack"
+	echo -e "\nStats: $name"
+	echo "---------------------------------------------"
+	echo -e "Level: $level\tExperience: $experience"
+	echo -e "Health: $health\tAttack: $((attack * level))"
 	echo "Kills: $kills"
 	if [[ $healpotion -gt 0 ]]; then
 		echo "Heal Potions: $healpotion"
@@ -57,8 +73,12 @@ status() {
 # Set starting stats
 health=100
 attack=10
-kills="0"
+kills=0
+level=1
+experience=0
+healpotion=1
 
+clear
 echo "Welcome to BASH RPG"
 echo "What is your name?: "
 read name
@@ -67,45 +87,68 @@ while [[ $health -gt 0 ]]; do
 	monster
 	status
 
+        experiencegain=$(expr $monhealth + $monattack)
+        experiencegain=$(expr $experiencegain / 3)
 	# Fight or run phase
-	echo "You are faced with a $monname"	
+
+	echo -e "\n"
+	echo -e "Battle"
+	echo "---------------------------------------------"
+	echo "You are faced with a $monname (Health: $monhealth, Attack: $monattack)"	
 	echo "Do you wish to run or fight?: "
 	read rof
 	rof=$(echo "$rof" | tr '[:upper:]' '[:lower:]')
 	if	[[ "$rof" = "fight" ]]; then
-		echo "You draw your weapon and face off against a $monname!" 
+		echo -e "\nYou draw your weapon and face off against a $monname!" 
 	else
-		echo "You sprint away and escape from a $monname!" 
+		echo -e "\nYou sprint away and escape from a $monname!" 
 		monhealth=0
 	fi
 	
 	# Combat phase
 	while [[ $health -gt 0 && $monhealth -gt 0 ]]; do
-		echo "You attack for $attack damage."
+                currentattack=`random $((attack * level))`
+		echo -e "\nYou attack for $currentattack damage."
 		sleep 1
-		((monhealth -= $attack))
-		echo "$monname hits you for $monattack damage."
+		((monhealth -= currentattack))
+
+                currentmonattack=`random monattack`
+		echo "$monname hits you for $currentmonattack damage."
 		sleep 1
-		((health -= $monattack))
+		((health -= $currentmonattack))
 		if [[ $monhealth -lt 1 ]]; then
-			echo "You have defeated a $monname! You have become more powerful!"
+			echo -e "\nWin"
+			echo "---------------------------------------------"
+			echo -e "\nYou have defeated a $monname and gained $experiencegain experience points!"
+			echo -e "Your health: $health"
 			((kills += 1))
-			((attack += 1))
+			((experience += experiencegain))
+
+			if [ $experience -gt 50 ]; then
+			  level=2
+			fi
+
+			if [ $experience -gt 150 ]; then
+			  level=3
+			fi
 
 			# Heal Potion 
-			pot=`random 1`
+			pot=`random 4`
 			if [[ $pot -eq 1 ]]; then
-				echo "You found a health potion! Press 1 to drink or 2 to save."
+				echo -e "\nYou found a health potion!\n"
 				((healpotion += 1))
+			fi
+
+			if [[ $healpotion -gt 0 ]]; then
+				echo -e "\nHeal"
+				echo "---------------------------------------------"
+				echo -e "Do you want to drink a Health Potion? You have $healpotion."
+				echo "Press 1 to drink or 2 to save"
 				select drink in "Drink" "Save"; do
 					case $drink in
 						Drink ) 
-							if [[ $healpotion -gt 0 ]]; then
-								((health += 20))
-								((healpotion -= 1))
-							else
-								echo "You dont have any health potions!"
-							fi
+							((health += 20))
+							((healpotion -= 1))
 						break;;
 						Save ) 
 							echo "You decide not to drink a health potion."
@@ -117,9 +160,11 @@ while [[ $health -gt 0 ]]; do
 
 		# Death
 		if [[ $health -lt 1 ]]; then
-			echo "You're dead. :("
+			echo -e "\nDefeated"
+			echo "---------------------------------------------"
+			echo -e "\nYou're dead. :("
 			status
-			echo "Would you like to play again?: "
+			echo -e "\nWould you like to play again?: "
 			read again
 			again=$(echo "$again" | tr '[:upper:]' '[:lower:]')
 			if [[ $again = "yes" ]]; then
@@ -127,6 +172,9 @@ while [[ $health -gt 0 ]]; do
 				attack=10
 				kills="0"
 				monhealth=0
+				experience=0
+				level=1
+				healpotion=1
 			else
 				echo "$kills - $name" >> .highscores
 				cat .highscores | sort -n -r | tail -n 10 > .highscores.new

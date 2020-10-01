@@ -1,10 +1,22 @@
 bashgame
 ========
-A super simple proof of concept game written in bash.  Mostly for learning purposes.
+A simple text-based RPG written in bash, mostly for learning purposes.
 
+How to Play
+---
+Check out the repository, and run the following on the command line:
 
-##TODO
-* Health potions
-* experience? Reason to attack bigger mobs
-* high score list
+```
+$ bash game.sh
+```
+
+Contributing
+---
+If you want to learn about bash, git, and want to contribute to the game, here is a list of ideas:
+
+* Improving how health potions work
+* Expand on levels and experience
+* Expand high score list to include more information
+* Introduce some sort of overworld and/or places to visit in addition to battles
 * Way to host on the internet reliably (Windows netcat?)
+
